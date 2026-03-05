@@ -1,0 +1,17 @@
+{
+  "id": "0646338d-b541-459f-b1fa-343d62684460",
+  "messages": [
+    {
+      "role": "user",
+      "content": "explain Seasonality in brief",
+      "timestamp": "2026-03-03T13:30:19.945370"
+    },
+    {
+      "role": "assistant",
+      "content": "d on the models discussed in earlier chapters.\n\n11.1 Complex seasonality So far, we have considered relatively simple seasonal patterns such as quarterly and monthly data.\n\nHowever, higher frequency time series often exhibit more complicated seasonal patterns.\n\nFor example, daily data may have a weekly pattern as well as an annual pattern.\n\nHourly data usually has three types of seasonality: a daily pattern, a weekly pattern, and an annual pattern.\n\n### Key Points:\n\n1. ine(h0) plot(PACF, type\"h\", xlab\"LAG\", ylimc(-.\n\n8)); abline(h0) Seasonalpersistenceoccurswhentheprocessisnearlyperiodicintheseason.\n\n2. of the economy rather than the seasonal variation.\n\nAn increase in unemployment due to school leavers seeking work is seasonal variation, while an increase in unemployment due to an economic recession is non-seasonal.\n\n3. seasonality,autocorrelationandexternalinformation.\n\nThemodel,whichisestimatedfromthetrainingperiod,can thenproduceforecastsonfuturedatabyinsertingtherelevant predictorinformationintotheestimatedregressionequation.\n\n<div style='color: #8ab4f8; font-size: 13px; margin-top: 1rem;'>\ud83d\udcda Sources: **Forecasting_ Principles and Practice.pdf**, **tsa4.pdf**, **GalitShmueliKennethC.LichtendahlJr-PracticalTimeSeriesForecastingwithR_AHands-OnGuide2ndEdition-AxelrodSchnallPublishers2016.pdf**</div>",
+      "timestamp": "2026-03-03T13:30:20.012346"
+    }
+  ],
+  "created_at": "2026-03-03T13:30:19.945370",
+  "updated_at": "2026-03-03T13:30:20.012346"
+}

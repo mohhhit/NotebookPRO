@@ -1,0 +1,17 @@
+{
+  "id": "9f4d7cab-c95d-440b-bc53-3e85b5dcc8a2",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Explain Trend in Brief",
+      "timestamp": "2026-03-03T14:01:31.888443"
+    },
+    {
+      "role": "assistant",
+      "content": "**Trend** refers to a long-term increase or decrease in the data, which does not have to be linear [Forecasting_ Principles and Practice]. It is a pattern in a time series that can be described as a gradual change in the data over time. A trend can be thought of as the overall direction in which the data is moving, and it can be either increasing or decreasing.\n\nTo break it down further, a trend can be characterized as follows:\n\n* It is a long-term pattern, meaning it persists over a long period of time.\n* It can be either linear or nonlinear, meaning it can change at a constant or varying rate.\n* It can change direction, meaning it can switch from an increasing trend to a decreasing trend, or vice versa.\n\nFor example, the antidiabetic drug sales data shown in Figure 2.2 exhibits a trend [GalitShmueliKennethC.LichtendahlJr-PracticalTimeSeriesForecastingwithR_AHands-OnGuide2ndEdition-AxelrodSchnallPublishers2016]. This trend can be modeled using a piecewise linear trend, which is a nonlinear trend constructed of linear pieces [tsa4].\n\n**Key Points:**\n\n1. **Trend** is a long-term increase or decrease in the data [Forecasting_ Principles and Practice].\n2. A trend can be either linear or nonlinear [GalitShmueliKennethC.LichtendahlJr-PracticalTimeSeriesForecastingwithR_AHands-OnGuide2ndEdition-AxelrodSchnallPublishers2016].\n3. A trend can change direction over time [Forecasting_ Principles and Practice].\n4. A piecewise linear trend can be used to model a nonlinear trend [tsa4].\n5. Removing the trend can be a useful step in exploratory analysis of a time series [Forecasting_ Principles and Practice].\n\n<div style='color: #8ab4f8; font-size: 13px; margin-top: 1rem;'>\ud83d\udcda Sources: **Forecasting_ Principles and Practice.pdf**, **tsa4.pdf**, **GalitShmueliKennethC.LichtendahlJr-PracticalTimeSeriesForecastingwithR_AHands-OnGuide2ndEdition-AxelrodSchnallPublishers2016.pdf**</div>",
+      "timestamp": "2026-03-03T14:01:33.527715"
+    }
+  ],
+  "created_at": "2026-03-03T14:01:31.888443",
+  "updated_at": "2026-03-03T14:01:33.527715"
+}

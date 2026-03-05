@@ -1,0 +1,28 @@
+{
+  "spaces": [
+    {
+      "id": "general",
+      "name": "General",
+      "description": "General study materials",
+      "created_at": "2026-03-03T14:33:06.952432",
+      "file_count": 0,
+      "chat_count": 0
+    },
+    {
+      "id": "natural_language_processing",
+      "name": "Natural Language Processing",
+      "description": "SEM preparation of NLP",
+      "created_at": "2026-03-03T16:11:54.207544",
+      "file_count": 0,
+      "chat_count": 0
+    },
+    {
+      "id": "time_series_and_forecasting",
+      "name": "Time Series and Forecasting",
+      "description": "SEM preparation of TSA",
+      "created_at": "2026-03-03T16:12:19.448559",
+      "file_count": 0,
+      "chat_count": 0
+    }
+  ]
+}

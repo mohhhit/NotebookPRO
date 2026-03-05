@@ -1,0 +1,17 @@
+{
+  "id": "5e73bc0e-8aed-4c47-8708-0af5e5d1341b",
+  "messages": [
+    {
+      "role": "user",
+      "content": "explain trend in brief",
+      "timestamp": "2026-03-03T13:45:53.132216"
+    },
+    {
+      "role": "assistant",
+      "content": "and the fact that the trend is changing slowly.\n\n2.3 Time series patterns In describing these time series, we have used words such as trend and seasonal which need to be dened more carefully.\n\nTrend A trend exists when there is a long-term increase or decrease in the data.\n\nIt does not have to be linear.\n\nSometimes we will refer to a trend as changing direction, when it might go from an increasing trend to a decreasing trend.\n\nThere is a trend in the antidiabetic drug sales data shown in Figure 2.2. **[Forecasting_ Principles and Practice]**\n\n### Key Points:\n\n1. \u03c4 a nonlinear trend constructed of linear pieces.\n\nIf the trend bends at time , then x t c \u03c4 it can be specied by simply replacing and above such that we include the predictors, x t 1,t 0 t \u03c4 x (t \u03c4) 2,t (t \u03c4) t \u03c4 x x \u03b2 \u03b2 \u03b2 in the model. **[Forecasting_ Principles and Practice]**\n\n2. denotes the trend, and y is a stationary process.\n\nt t t Quite often, strong trend will obscure the behavior of the stationary process, y , as t weshallseeinnumerousexamples. **[tsa4]**\n\n3. bserving the primary patterns in the time history.\n\nInthiscase,notethegraduallyincreasingunderlyingtrendandtherather regular variation superimposed on the trend that seems to repeat over quarters. **[tsa4]**\n\n<div style='color: #8ab4f8; font-size: 13px; margin-top: 1rem;'>\ud83d\udcda Sources: **Forecasting_ Principles and Practice.pdf**, **tsa4.pdf**, **GalitShmueliKennethC.LichtendahlJr-PracticalTimeSeriesForecastingwithR_AHands-OnGuide2ndEdition-AxelrodSchnallPublishers2016.pdf**</div>",
+      "timestamp": "2026-03-03T13:45:53.176219"
+    }
+  ],
+  "created_at": "2026-03-03T13:45:53.132216",
+  "updated_at": "2026-03-03T13:45:53.176219"
+}

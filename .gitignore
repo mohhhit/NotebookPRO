@@ -1,0 +1,6 @@
+__pycache__/
+data/spaces/
+data/vector_db/
+data/uploads/
+data/user_config.json
+chat.json

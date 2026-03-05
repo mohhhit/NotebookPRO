@@ -1,0 +1,47 @@
+{
+  "id": "75b1de68-5df0-470a-badf-52eee62dc4d5",
+  "messages": [
+    {
+      "role": "user",
+      "content": "explain Lemmatization in brief",
+      "timestamp": "2026-03-02T23:01:31.194908"
+    },
+    {
+      "role": "assistant",
+      "content": "used to represent partial parses intheEarleychart. Theoriginalstatescontainfieldsforthecontext-freerule being used, the position of the dot representing how much of the rule has beencompleted,thepositionsofthebeginningandendofthestate,andalist ofotherstatesthatrepresent thecompleted sub-parts ofthestate. Tothisset offields,wesimplyaddanadditional fieldtocontain theDAGrepresenting the feature structure corresponding to the state.\n\n### Key Points:\n\n\u2022 the feature structure corresponding to the state",
+      "timestamp": "2026-03-02T23:01:31.244685"
+    },
+    {
+      "role": "user",
+      "content": "Explain Lemmatization in Brief",
+      "timestamp": "2026-03-02T23:19:36.900192"
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have enough information from your uploaded documents to answer this question. Please upload relevant study materials first, or try rephrasing your question.",
+      "timestamp": "2026-03-02T23:19:36.939163"
+    },
+    {
+      "role": "user",
+      "content": "explain Stemming",
+      "timestamp": "2026-03-02T23:28:39.812111"
+    },
+    {
+      "role": "assistant",
+      "content": "I couldn't find relevant information in your uploaded documents. Try uploading more study materials or rephrasing your question.",
+      "timestamp": "2026-03-02T23:28:39.850632"
+    },
+    {
+      "role": "user",
+      "content": "explain stemming",
+      "timestamp": "2026-03-02T23:29:37.803129"
+    },
+    {
+      "role": "assistant",
+      "content": "I couldn't find relevant information in your uploaded documents. Try uploading more study materials or rephrasing your question.",
+      "timestamp": "2026-03-02T23:29:37.819095"
+    }
+  ],
+  "created_at": "2026-03-02T23:01:31.194908",
+  "updated_at": "2026-03-02T23:29:37.819095"
+}

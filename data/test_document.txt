@@ -1,0 +1,99 @@
+# Test Document - Machine Learning Basics
+
+## Introduction to Machine Learning
+
+Machine learning is a subset of artificial intelligence that focuses on the development of algorithms that can learn from and make predictions or decisions based on data.
+
+## Types of Machine Learning
+
+### 1. Supervised Learning
+In supervised learning, the algorithm learns from labeled training data. The model is trained on input-output pairs and learns to map inputs to correct outputs.
+
+Common algorithms:
+- Linear Regression
+- Logistic Regression
+- Decision Trees
+- Random Forests
+- Support Vector Machines (SVM)
+- Neural Networks
+
+### 2. Unsupervised Learning
+Unsupervised learning involves finding patterns in data without labeled outputs. The algorithm tries to discover hidden structures in the data.
+
+Common algorithms:
+- K-Means Clustering
+- Hierarchical Clustering
+- Principal Component Analysis (PCA)
+- Autoencoders
+
+### 3. Reinforcement Learning
+Reinforcement learning involves an agent learning to make decisions by interacting with an environment. The agent receives rewards or penalties and learns to maximize cumulative rewards.
+
+## Key Concepts
+
+### Neural Networks
+Neural networks are computing systems inspired by biological neural networks. They consist of interconnected nodes (neurons) organized in layers:
+- Input Layer: Receives the input data
+- Hidden Layers: Process the data through weighted connections
+- Output Layer: Produces the final prediction
+
+### Backpropagation
+Backpropagation is the algorithm used to train neural networks. It works by:
+1. Computing the error between predicted and actual outputs
+2. Propagating this error backwards through the network
+3. Updating weights to minimize the error using gradient descent
+
+### Gradient Descent
+Gradient descent is an optimization algorithm used to minimize the loss function by iteratively adjusting model parameters in the direction of steepest descent.
+
+## Deep Learning
+Deep learning is a subset of machine learning that uses neural networks with multiple layers (deep neural networks). It has achieved remarkable success in:
+- Image recognition
+- Natural language processing
+- Speech recognition
+- Game playing (e.g., AlphaGo)
+
+### Convolutional Neural Networks (CNNs)
+CNNs are specialized neural networks designed for processing grid-like data such as images. They use:
+- Convolutional layers to detect features
+- Pooling layers to reduce dimensionality
+- Fully connected layers for classification
+
+### Recurrent Neural Networks (RNNs)
+RNNs are designed for sequential data and have connections that form directed cycles, allowing information to persist.
+
+## Model Evaluation
+
+### Metrics for Classification
+- Accuracy: Percentage of correct predictions
+- Precision: True positives / (True positives + False positives)
+- Recall: True positives / (True positives + False negatives)  
+- F1 Score: Harmonic mean of precision and recall
+
+### Metrics for Regression
+- Mean Squared Error (MSE)
+- Mean Absolute Error (MAE)
+- R-squared (R²)
+
+## Overfitting and Underfitting
+
+### Overfitting
+Occurs when a model learns the training data too well, including noise and outliers, resulting in poor generalization to new data.
+
+Solutions:
+- Cross-validation
+- Regularization (L1, L2)
+- Early stopping
+- Data augmentation
+
+### Underfitting
+Occurs when a model is too simple to capture the underlying patterns in the data.
+
+Solutions:
+- Increase model complexity
+- Add more features
+- Reduce regularization
+- Train for more epochs
+
+## Conclusion
+Machine learning is a vast and rapidly evolving field with applications across many domains. Understanding these fundamental concepts is crucial for developing effective ML solutions.
