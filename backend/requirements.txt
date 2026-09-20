@@ -1,0 +1,33 @@
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# FastAPI backend runtime
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+pydantic==1.10.13
+
+# Environment/config
+python-dotenv==1.0.0
+
+# Vector search and retrieval
+chromadb==0.3.21
+sentence-transformers>=3.4.1
+rank-bm25==0.2.2
+numpy==1.26.4
+
+# LLM inference/utilities used in backend scripts
+torch==2.5.1+cu121
+transformers>=4.45.0
+openai==1.52.2
+google-generativeai>=0.8.0
+
+# File processing and export
+PyPDF2==3.0.1
+pdfplumber==0.10.3
+python-docx==1.1.0
+reportlab==4.2.2
+
+ziamath
+ziafont
+weasyprint
+markdown

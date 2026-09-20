@@ -1,0 +1,147 @@
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# =========================
+# Python
+# =========================
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+virt/
+virt_oll/
+venv/
+env/
+ENV/
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+!.env.example
+**/apikey.txt
+**/api_key.txt
+
+# =========================
+# Logs / temp
+# =========================
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+error_log.txt
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Archives / binaries
+# =========================
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+
+# =========================
+# Runtime data (very large)
+# =========================
+data/**
+backend/data/**
+!data/.gitkeep
+!backend/data/.gitkeep
+
+# Optional keepers for empty structure
+!data/spaces/
+!data/chats/
+!data/uploads/
+!data/vector_db/
+!backend/data/spaces/
+!backend/data/chats/
+!backend/data/uploads/
+!backend/data/vector_db/
+
+# =========================
+# Chroma / vector artifacts
+# =========================
+**/vector_db/**
+**/*chroma*.sqlite3
+**/*.parquet
+**/*.bin
+
+# =========================
+# Flutter / Dart
+# =========================
+notebook_pro_app/.dart_tool/
+notebook_pro_app/build/
+notebook_pro_app/.flutter-plugins
+notebook_pro_app/.flutter-plugins-dependencies
+notebook_pro_app/.packages
+
+# Flutter platform ephemeral/generated files
+notebook_pro_app/windows/flutter/ephemeral/
+notebook_pro_app/linux/flutter/ephemeral/
+notebook_pro_app/macos/Flutter/ephemeral/
+notebook_pro_app/ios/Flutter/ephemeral/
+notebook_pro_app/android/.gradle/
+
+# IDE/project metadata
+notebook_pro_app/*.iml
+
+# Firebase generated local files
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+firebase-debug.*.log
+notebook_pro_app/firebase_options.dart
+notebook_pro_app/android/app/google-services.json
+notebook_pro_app/ios/Runner/GoogleService-Info.plist
+notebook_pro_app/macos/Runner/GoogleService-Info.plist
+notebook_pro_app/web/firebase-config.js
+
+
+# Installer and build output
+installer_output/
+installer_venv/
+build/
+
+
+# Debug and test scripts
+debug_chunks.txt
+test*.dart
+testscript.py
+
+
+# Logs
+*log*.txt
+
+
+installer/dist/
+installer/build/
+
+
+installer/dist/
+installer/build/
+installer/*.zip
+
