@@ -884,11 +884,12 @@ class LLMGenerator:
 
         if use_case == "explanation":
             base_prompt += (
-                "**Your task:** Explain the concept in a clear, step-by-step manner suitable for students.\n"
-                "1. Start with a concise, one-sentence definition.\n"
-                "2. Break down the core mechanics or components using bullet points.\n"
-                "3. Provide an example (only if found in the text).\n"
-                "4. Add a 'Key Takeaway' at the end.\n"
+                "**Your task:** Explain the concept in detail, in a clear, step-by-step manner suitable for advanced students.\n"
+                "- Start with a clear definition, but immediately follow up with deep, comprehensive details.\n"
+                "- Break down the core mechanics, formulas, and components extensively.\n"
+                "- Use multiple paragraphs and structured bullet points where necessary.\n"
+                "- Aim for substantial depth (typically 250-500 words) to ensure the concept is fully explored.\n"
+                "- Add a 'Key Takeaway' section at the end if appropriate.\n"
             )
         elif use_case == "summary":
             base_prompt += (
