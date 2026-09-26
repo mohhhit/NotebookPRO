@@ -17,6 +17,7 @@ class AppState extends ChangeNotifier with WindowListener {
   // Current state
   List<Space> _spaces = [];
   Space? _currentSpace;
+  final Set<String> _expandedSpaces = {};
   List<ChatInfo> _chats = [];
   Chat? _currentChat;
   List<Map<String, dynamic>> _uploadedFiles = [];
@@ -36,6 +37,7 @@ class AppState extends ChangeNotifier with WindowListener {
   // Getters
   List<Space> get spaces => _spaces;
   Space? get currentSpace => _currentSpace;
+  bool isSpaceExpanded(String spaceId) => _expandedSpaces.contains(spaceId);
   List<ChatInfo> get chats => _chats;
   Chat? get currentChat => _currentChat;
   List<Map<String, dynamic>> get uploadedFiles => _uploadedFiles;
@@ -49,6 +51,15 @@ class AppState extends ChangeNotifier with WindowListener {
   bool get plusMenuOpen => _plusMenuOpen;
   bool get toolsMenuOpen => _toolsMenuOpen;
   bool get filesDrawerOpen => _filesDrawerOpen;
+
+  void toggleSpaceExpansion(String spaceId) {
+    if (_expandedSpaces.contains(spaceId)) {
+      _expandedSpaces.remove(spaceId);
+    } else {
+      _expandedSpaces.add(spaceId);
+    }
+    notifyListeners();
+  }
 
   // Backend process tracking
   Process? _backendProcess;
@@ -683,6 +694,8 @@ class AppState extends ChangeNotifier with WindowListener {
 
   Future<void> selectSpace(String spaceId) async {
     _currentSpace = _spaces.firstWhere((s) => s.id == spaceId);
+    _expandedSpaces.clear();
+    _expandedSpaces.add(spaceId);
     _currentChat = null;
     await loadChats();
     await loadUploadedFiles();

@@ -706,17 +706,20 @@ class _HomePageState extends State<HomePage> {
                   onTap: () async {
                     if (appState.currentSpace?.id != space.id) {
                       await appState.selectSpace(space.id);
+                    } else {
+                      appState.toggleSpaceExpansion(space.id);
                     }
                   },
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (appState.currentSpace?.id == space.id)
-                        const Icon(
-                          Icons.expand_more,
-                          size: 18,
-                          color: Color(0xFF9AA0A6),
-                        ),
+                      Icon(
+                        appState.isSpaceExpanded(space.id)
+                            ? Icons.expand_less
+                            : Icons.expand_more,
+                        size: 18,
+                        color: const Color(0xFF9AA0A6),
+                      ),
                       IconButton(
                         icon: const Icon(Icons.delete, size: 18),
                         onPressed: () => appState.deleteSpace(space.id),
@@ -725,7 +728,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
-                if (appState.currentSpace?.id == space.id)
+                if (appState.isSpaceExpanded(space.id))
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 2, 12, 8),
                     child: OutlinedButton.icon(
@@ -745,7 +748,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
-                if (appState.currentSpace?.id == space.id &&
+                if (appState.isSpaceExpanded(space.id) &&
                     appState.chats.isEmpty)
                   const Padding(
                     padding: EdgeInsets.fromLTRB(28, 0, 16, 10),
@@ -755,7 +758,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
-                if (appState.currentSpace?.id == space.id)
+                if (appState.isSpaceExpanded(space.id))
                   ...appState.chats.asMap().entries.map((entry) {
                     final chat = entry.value;
                     return Container(
@@ -795,7 +798,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   }),
 
-                if (appState.currentSpace?.id == space.id)
+                if (appState.isSpaceExpanded(space.id))
                   const Divider(color: Color(0xFF2D2D2D), height: 12),
               ],
 
