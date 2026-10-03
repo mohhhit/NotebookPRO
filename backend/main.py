@@ -459,7 +459,7 @@ def rebuild_space_index_if_missing(space_id: str, force: bool = False) -> int:
         print(f"[INDEX_REBUILD {space_id}] skip no_chunks_generated")
         return 0
 
-    batch_size = 5000
+    batch_size = 128
     for i in range(0, len(texts), batch_size):
         end = min(i + batch_size, len(texts))
         print(f"[INDEX_REBUILD {space_id}] batch_add start={i} end={end}")
@@ -1336,8 +1336,8 @@ async def upload_files(space_id: str, files: List[UploadFile] = File(...)):
             metadatas = [chunk['metadata'] for chunk in all_chunks]
             ids = [f"{space_id}_{idx}_{uuid.uuid4().hex[:8]}" for idx in range(len(all_chunks))]
             
-            # Process in batches of 5000 to avoid ChromaDB batch size limit
-            batch_size = 5000
+            # Process in batches of 128 to avoid OOM on low RAM systems
+            batch_size = 128
             for i in range(0, len(texts), batch_size):
                 batch_texts = texts[i:i + batch_size]
                 batch_metadatas = metadatas[i:i + batch_size]
