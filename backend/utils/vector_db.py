@@ -383,6 +383,25 @@ class VectorDatabase:
             "reranker_scores": [list(scores_out)],
         }
 
+    def rerank_documents(self, query_text: str, docs: List[str]) -> List[float]:
+        """Rerank an arbitrary candidate list of documents against query_text using the cross-encoder."""
+        if not docs:
+            return []
+        try:
+            import torch
+            reranker = self._get_or_create_reranker()
+            pairs = [[query_text, doc] for doc in docs]
+            scores = reranker.predict(
+                pairs,
+                batch_size=self._reranker_batch_size(),
+                show_progress_bar=False,
+            )
+            scores = torch.sigmoid(torch.tensor(list(scores))).tolist()
+            return [float(s) for s in scores]
+        except Exception as e:
+            print(f"[VECTOR_DB] rerank_documents failed: {e}")
+            return []
+
     def delete_collection(self):
         """Delete the entire collection."""
         self.client.delete_collection(name=self.collection.name)

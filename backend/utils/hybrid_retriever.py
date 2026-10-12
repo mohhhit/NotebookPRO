@@ -79,7 +79,8 @@ class HybridRetriever:
         score_threshold: float = 0.0
     ) -> Tuple[List[str], List[Dict], List[float]]:
         """
-        Hybrid retrieval: combines vector + keyword search.
+        True Hybrid retrieval: combines Dense Vector search + Sparse BM25 keyword search,
+        followed by Cross-Encoder reranking.
         
         Args:
             query: User's question
@@ -89,108 +90,103 @@ class HybridRetriever:
         Returns:
             Tuple of (documents, metadatas, scores)
         """
-        # Preferred path: dense retrieval + cross-encoder reranking in vector DB.
-        if hasattr(self.vector_db, 'query_and_rerank'):
-            try:
-                reranked = self.vector_db.query_and_rerank(
-                    query_text=query,
-                    n_retrieve=max(n_results * 2, 20),
-                    n_final=n_results,
-                    filter_dict=None,
-                )
-                docs = reranked.get('documents', [[]])[0]
-                metas = reranked.get('metadatas', [[]])[0]
-                scores = reranked.get('reranker_scores', [[]])[0]
+        fetch_size = max(n_results * 3, 40)
+        
+        # 1. Dense Vector Search (semantic similarity)
+        vector_docs: List[str] = []
+        vector_meta: List[Dict] = []
+        vector_scores: List[float] = []
+        try:
+            vector_results = self.vector_db.query(query, n_results=fetch_size)
+            vector_docs = vector_results.get('documents', [[]])[0]
+            vector_meta = vector_results.get('metadatas', [[]])[0]
+            vector_distances = vector_results.get('distances', [[]])[0]
+            vector_scores = [1.0 / (1.0 + d) for d in vector_distances]
+        except Exception as e:
+            print(f"[RETRIEVER] vector_query_error: {e}")
 
-                if docs:
-                    filtered = [
-                        (d, m, float(s))
-                        for d, m, s in zip(docs, metas, scores)
-                        if float(s) >= score_threshold
-                    ]
-                    if filtered:
-                        return (
-                            [d for d, _, _ in filtered],
-                            [m for _, m, _ in filtered],
-                            [s for _, _, s in filtered],
-                        )
-            except Exception as e:
-                print(f"[RETRIEVER] rerank_path_fallback reason={e}")
-
+        # 2. Sparse BM25 Keyword Search (exact keyword matches like 'Prometheus')
         self.ensure_bm25_index()
+        bm25_docs: List[str] = []
+        bm25_meta: List[Dict] = []
+        bm25_scores: List[float] = []
+        if self.bm25:
+            try:
+                tokenized_query = self._tokenize(query)
+                if tokenized_query:
+                    raw_bm25_scores = self.bm25.get_scores(tokenized_query)
+                    top_bm25_indices = np.argsort(raw_bm25_scores)[::-1][:fetch_size]
+                    max_score = float(np.max(raw_bm25_scores)) if len(raw_bm25_scores) > 0 and np.max(raw_bm25_scores) > 0 else 1.0
+                    for idx in top_bm25_indices:
+                        if raw_bm25_scores[idx] > 0:
+                            bm25_docs.append(self.bm25_corpus[idx])
+                            bm25_meta.append(self.bm25_metadata[idx])
+                            bm25_scores.append(float(raw_bm25_scores[idx]) / max_score)
+            except Exception as e:
+                print(f"[RETRIEVER] bm25_query_error: {e}")
 
-        if not self.bm25:
-            # Fallback to pure vector search if BM25 not initialized
-            results = self.vector_db.query(query, n_results=n_results * 2)
-            return (
-                results['documents'][0] if results['documents'] else [],
-                results['metadatas'][0] if results['metadatas'] else [],
-                results.get('distances', [[]])[0]
-            )
+        # 3. Deduplicate and merge candidates into a unified pool
+        candidates_map: Dict[str, Dict] = {}
         
-        # Get more results than needed for reranking.
-        # A larger candidate pool helps with multi-book questions.
-        fetch_size = max(n_results * 5, 30)
-        
-        # 1. Vector search (semantic similarity)
-        vector_results = self.vector_db.query(query, n_results=fetch_size)
-        vector_docs = vector_results['documents'][0] if vector_results['documents'] else []
-        vector_meta = vector_results['metadatas'][0] if vector_results['metadatas'] else []
-        vector_distances = vector_results.get('distances', [[]])[0]
-        
-        # Convert distances to similarity scores (chromadb uses cosine distance)
-        vector_scores = [1 / (1 + d) for d in vector_distances]
-        
-        # 2. BM25 search (keyword matching)
-        tokenized_query = self._tokenize(query)
-        bm25_scores = self.bm25.get_scores(tokenized_query)
-        
-        # Get top BM25 results
-        top_bm25_indices = np.argsort(bm25_scores)[::-1][:fetch_size]
-        
-        # 3. Combine results with weighted scoring
-        combined_docs = {}  # Use dict to deduplicate by content
-        
-        # Add vector results
+        # Add vector search results
         for doc, meta, score in zip(vector_docs, vector_meta, vector_scores):
-            combined_docs[doc] = {
+            fp = doc.strip()[:240]
+            candidates_map[fp] = {
                 'doc': doc,
                 'meta': meta,
-                'score': self.alpha * score
+                'vector_score': score,
+                'bm25_score': 0.0,
+                'score': self.alpha * score,
             }
-        
-        # Add BM25 results (normalize scores to 0-1 range)
-        max_bm25_score = max(bm25_scores) if max(bm25_scores) > 0 else 1
-        for idx in top_bm25_indices:
-            doc = self.bm25_corpus[idx]
-            meta = self.bm25_metadata[idx]
-            bm25_score = bm25_scores[idx] / max_bm25_score
-            
-            if doc in combined_docs:
-                # Average if document found by both methods
-                combined_docs[doc]['score'] += (1 - self.alpha) * bm25_score
+
+        # Add BM25 keyword results
+        for doc, meta, score in zip(bm25_docs, bm25_meta, bm25_scores):
+            fp = doc.strip()[:240]
+            if fp in candidates_map:
+                candidates_map[fp]['bm25_score'] = score
+                candidates_map[fp]['score'] = (
+                    self.alpha * candidates_map[fp]['vector_score'] + (1 - self.alpha) * score
+                )
             else:
-                combined_docs[doc] = {
+                candidates_map[fp] = {
                     'doc': doc,
                     'meta': meta,
-                    'score': (1 - self.alpha) * bm25_score
+                    'vector_score': 0.0,
+                    'bm25_score': score,
+                    'score': (1 - self.alpha) * score,
                 }
-        
-        # 4. Rank by combined score
+
+        candidate_list = list(candidates_map.values())
+        if not candidate_list:
+            return [], [], []
+
+        # 4. Two-stage Cross-Encoder Reranking on merged candidate pool
+        if hasattr(self.vector_db, 'rerank_documents'):
+            try:
+                candidate_docs = [c['doc'] for c in candidate_list]
+                rerank_scores = self.vector_db.rerank_documents(query, candidate_docs)
+                if rerank_scores and len(rerank_scores) == len(candidate_list):
+                    for c, r_score in zip(candidate_list, rerank_scores):
+                        c['score'] = r_score
+            except Exception as e:
+                print(f"[RETRIEVER] cross_encoder_rerank_failed fallback_to_hybrid_score: {e}")
+
+        # 5. Rank by final score
         ranked_results = sorted(
-            combined_docs.values(), 
-            key=lambda x: x['score'], 
-            reverse=True
+            candidate_list,
+            key=lambda x: x['score'],
+            reverse=True,
         )
-        
-        # 5. Filter by threshold
+
+        # 6. Filter by threshold (keep at least top n_results if all fall below strict threshold)
         filtered_results = [
-            r for r in ranked_results 
+            r for r in ranked_results
             if r['score'] >= score_threshold
         ]
+        if not filtered_results and ranked_results:
+            filtered_results = ranked_results[:n_results]
 
-        # 6. Select with soft per-source caps.
-        # Hard one-per-source selection caused shallow, generic answers.
+        # 7. Select with soft per-source caps for multi-source diversity
         selected = []
         source_counts = {}
         max_per_source = max(3, n_results // 2)
@@ -210,13 +206,12 @@ class HybridRetriever:
                 selected.append(r)
                 if len(selected) >= n_results:
                     break
-        
-        # 7. Return in expected format
-        documents = [r['doc'] for r in selected]
-        metadatas = [r['meta'] for r in selected]
-        scores = [r['score'] for r in selected]
-        
-        return documents, metadatas, scores
+
+        return (
+            [r['doc'] for r in selected],
+            [r['meta'] for r in selected],
+            [r['score'] for r in selected],
+        )
     
     def get_stats(self) -> Dict:
         """Get retriever statistics."""

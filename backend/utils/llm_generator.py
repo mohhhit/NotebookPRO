@@ -70,18 +70,22 @@ class LLMGenerator:
 
         if self.nvidia_api_key and NVIDIA_CLIENT_AVAILABLE:
             try:
+                import httpx
                 self.nvidia_client = OpenAI(
                     base_url=self.api_base_url,
                     api_key=self.nvidia_api_key,
+                    http_client=httpx.Client(),
                 )
             except Exception as e:
                 print(f"Failed to initialize nvidia client: {e}")
 
         if self.groq_api_key and NVIDIA_CLIENT_AVAILABLE:
             try:
+                import httpx
                 self.groq_client = OpenAI(
                     base_url=self.groq_api_base_url,
                     api_key=self.groq_api_key,
+                    http_client=httpx.Client(),
                 )
             except Exception as e:
                 print(f"Failed to initialize groq client: {e}")
@@ -596,7 +600,7 @@ class LLMGenerator:
         max_questions: int = 3,
     ) -> List[str]:
         """Generate short, actionable follow-up questions for the chat UI."""
-        if not self.nvidia_client or not context or not answer:
+        if not (self.nvidia_client or self.groq_client) or not context or not answer:
             return []
 
         max_questions = max(1, min(max_questions, 5))
@@ -1055,7 +1059,7 @@ class LLMGenerator:
             "stream": False,
         }
         if provider == "groq":
-            request_kwargs["reasoning_effort"] = "low"
+            request_kwargs["extra_body"] = {"reasoning_effort": "low"}
 
         response = client.chat.completions.create(
             **request_kwargs,

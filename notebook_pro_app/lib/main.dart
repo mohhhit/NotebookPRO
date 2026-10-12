@@ -2070,7 +2070,7 @@ class _HomePageState extends State<HomePage> {
       allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: ['pdf', 'txt', 'docx'],
-      withData: true, // Important for web: loads file bytes
+      withData: kIsWeb, // Important for web: loads file bytes. Desktop/Mobile use paths.
     );
 
     if (result != null && result.files.isNotEmpty) {

@@ -1503,6 +1503,32 @@ def _render_latex_to_mathml(text: str) -> str:
 
     return text
 
+def _normalize_markdown_lists(text: str) -> str:
+    """Ensure blank lines precede and follow list blocks so Markdown parsers render them as real lists."""
+    if not text:
+        return ""
+    lines = text.splitlines()
+    out = []
+    in_list = False
+    list_marker = re.compile(r'^(\s*(?:[-*+]|\d+[.)]))\s+')
+
+    for line in lines:
+        is_list_item = bool(list_marker.match(line))
+        if is_list_item and not in_list:
+            if out and out[-1].strip() != '':
+                out.append('')
+            in_list = True
+        elif not is_list_item and in_list:
+            if line.strip() != '' and out and out[-1].strip() != '':
+                out.append('')
+            in_list = False
+        elif not line.strip():
+            in_list = False
+
+        out.append(line)
+
+    return '\n'.join(out)
+
 def _render_html_page(title: str, body_html: str, space_id: str) -> bytes:
     """Generates WeasyPrint PDF from HTML."""
     exported_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -1513,18 +1539,22 @@ def _render_html_page(title: str, body_html: str, space_id: str) -> bytes:
         <meta charset="utf-8">
         <title>{html.escape(title)}</title>
         <style>
-            body {{ font-family: sans-serif; font-size: 11pt; line-height: 1.5; color: #333; }}
-            h1 {{ font-size: 18pt; margin-bottom: 5px; }}
-            .meta {{ font-size: 9pt; color: #666; margin-bottom: 20px; }}
-            h2 {{ font-size: 14pt; margin-top: 15px; margin-bottom: 5px; }}
-            h3 {{ font-size: 12.5pt; margin-top: 10px; margin-bottom: 5px; }}
-            table {{ border-collapse: collapse; width: 100%; margin-bottom: 10px; }}
-            th, td {{ border: 1px solid #ccc; padding: 6px; text-align: left; font-size: 10pt; }}
-            pre {{ background-color: #f5f5f5; padding: 10px; font-size: 9.5pt; overflow-x: auto; }}
-            code {{ font-family: monospace; background-color: #f5f5f5; padding: 2px 4px; }}
-            blockquote {{ border-left: 3px solid #ccc; margin: 0; padding-left: 10px; color: #555; }}
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #2d3748; }}
+            h1 {{ font-size: 18pt; margin-bottom: 5px; color: #1a202c; }}
+            .meta {{ font-size: 9pt; color: #718096; margin-bottom: 20px; }}
+            h2 {{ font-size: 14pt; margin-top: 18px; margin-bottom: 8px; color: #2d3748; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }}
+            h3 {{ font-size: 12.5pt; margin-top: 14px; margin-bottom: 6px; color: #2d3748; }}
+            p {{ margin-top: 6px; margin-bottom: 10px; }}
+            ul, ol {{ margin-top: 6px; margin-bottom: 12px; padding-left: 24px; }}
+            li {{ margin-bottom: 6px; line-height: 1.5; }}
+            table {{ border-collapse: collapse; width: 100%; margin-top: 10px; margin-bottom: 15px; }}
+            th, td {{ border: 1px solid #cbd5e0; padding: 8px 10px; text-align: left; font-size: 10pt; }}
+            th {{ background-color: #f7fafc; font-weight: 600; }}
+            pre {{ background-color: #f7fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 10px; font-size: 9.5pt; overflow-x: auto; }}
+            code {{ font-family: Consolas, Monaco, monospace; background-color: #edf2f7; padding: 2px 5px; border-radius: 3px; font-size: 9.5pt; }}
+            blockquote {{ border-left: 4px solid #4a5568; margin: 10px 0; padding-left: 12px; color: #4a5568; font-style: italic; }}
             math {{ font-family: "Cambria Math", "Latin Modern Math", "STIX Two Math", math, serif; font-size: 1.1em; }}
-            .answer-block {{ margin-bottom: 20px; }}
+            .answer-block {{ margin-bottom: 25px; page-break-inside: avoid; }}
         </style>
     </head>
     <body>
@@ -1546,8 +1576,11 @@ def _build_answers_pdf_bytes(title: str, items: list[dict], space_id: str) -> by
         q_math = _render_latex_to_mathml(q)
         a_math = _render_latex_to_mathml(a)
         
-        q_html = markdown.markdown(q_math, extensions=['tables', 'fenced_code'])
-        a_html = markdown.markdown(a_math, extensions=['tables', 'fenced_code'])
+        q_clean = _normalize_markdown_lists(q_math)
+        a_clean = _normalize_markdown_lists(a_math)
+
+        q_html = markdown.markdown(q_clean, extensions=['tables', 'fenced_code', 'sane_lists'])
+        a_html = markdown.markdown(a_clean, extensions=['tables', 'fenced_code', 'sane_lists'])
         
         body_parts.append(f"<div class='answer-block'><h2>Question: {q_html}</h2><div class='answer'>{a_html}</div></div><hr>")
         
@@ -1730,7 +1763,8 @@ def _build_notebook_entries_pdf_bytes(title: str, entries: list, space_id: str) 
         updated = entry.updated_at.strftime('%Y-%m-%d %H:%M') if entry.updated_at else ''
         
         body_text = _render_latex_to_mathml(body_text)
-        body_html = markdown.markdown(body_text, extensions=['tables', 'fenced_code'])
+        body_text = _normalize_markdown_lists(body_text)
+        body_html = markdown.markdown(body_text, extensions=['tables', 'fenced_code', 'sane_lists'])
         
         updated_str = f"<div class='meta'>Updated: {updated}</div>" if updated else ""
         body_parts.append(f"<div class='answer-block'><h2>{idx}. {html.escape(entry_title)}</h2>{updated_str}<div>{body_html}</div></div><hr>")
